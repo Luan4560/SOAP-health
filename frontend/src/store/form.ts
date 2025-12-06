@@ -7,7 +7,7 @@ const usePreviewData = create<UsePreviewDataProps>()((set) => ({
   setIngredientsDataStore: (ingredientsData) =>
     set(() => ({ ingredientsData })),
 
-  setPreviewDataStore: (previewData) => set(() => ({ previewData })),
+  setPreviewDataStore: (data) => set({ previewData: data }),
 
   setSizesDataStore: (sizesData) => set(() => ({ sizesData })),
 }));

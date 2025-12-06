@@ -36,10 +36,10 @@ interface CreateOrder {
 }
 
 interface UsePreviewDataProps {
-  previewData: ShowDetailsProps[] | null;
+  previewData: ShowDetailsProps | null;
   sizesData: SizeProps[] | null;
   ingredientsData: IngredientsProps[] | null;
-  setPreviewDataStore: (data: ShowDetailsProps[]) => void;
+  setPreviewDataStore: (data: ShowDetailsProps) => void;
   setSizesDataStore: (data: SizeProps[]) => void;
   setIngredientsDataStore: (data: IngredientsProps[]) => void;
 }

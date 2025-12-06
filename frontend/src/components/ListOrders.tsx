@@ -48,7 +48,13 @@ export const ListOrders = () => {
               <th scope="row">{item.id}</th>
               <td>{item?.customerName}</td>
               <td>{item?.finalPrice}</td>
-              <td>{item?.createdAt}</td>
+              {new Date(item.createdAt).toLocaleString("en-US", {
+                month: "2-digit",
+                day: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
             </tr>
           ))}
         </tbody>
