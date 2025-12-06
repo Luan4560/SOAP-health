@@ -1,10 +1,14 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-
 import { calculationFinalPrice } from "../utils/index.ts";
 import { CreateOrder } from "../types.ts";
 import { CreateOrderSchema } from "../schemas/index.ts";
-
 import { SIZES, INGREDIENTS } from "../utils/data.ts";
+
+type OrderFilters = {
+  customerName?: string;
+  sortBy?: "finalPrice" | "createdAt";
+  order?: "asc" | "desc";
+};
 
 let db: CreateOrder[] = [];
 
@@ -36,7 +40,7 @@ export function createOrder(
 
     if (isIngredientsAvailable.length > 0) {
       reply.code(400).send({
-        ingredients: `${isIngredientsAvailable} Do not exists `,
+        ingredients: `${isIngredientsAvailable} Do not exist`,
       });
     }
 
@@ -53,7 +57,7 @@ export function createOrder(
       customerName,
       ingredientIds,
       sizeId,
-      createdAt: Date.now(),
+      createdAt: new Date().toISOString(),
     };
 
     db.push(newOrder);
@@ -69,18 +73,25 @@ export function createOrder(
   }
 }
 
+// TODO: implementar filtros
 export function listOrders(
-  request: FastifyRequest<{ Body: CreateOrder }>,
+  request: FastifyRequest<{ Querystring: Record<string, any> }>,
   reply: FastifyReply
 ) {
   try {
-    const filters = request.query;
-    // TODO: Implementar filtros
+    const { customerName } = request.query;
 
-    const results = db.map((order) => ({
+    let results = db.map((order) => ({
       ...order,
       finalPrice: calculationFinalPrice(order),
     }));
+
+    if (customerName) {
+      const term = customerName.toLocaleLowerCase();
+      results = results.filter((item) =>
+        item.customerName.toLowerCase().includes(term)
+      );
+    }
 
     reply.code(200).send({ orders: results });
   } catch (error) {
